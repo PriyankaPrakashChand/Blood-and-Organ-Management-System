@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 import com.bloodorganmanagementsystem.app.entities.Blood.BloodType;
+import com.bloodorganmanagementsystem.app.entities.DonationEntityDetail.EntityName;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,9 +20,7 @@ public class ReceivedEntityDetail {
 	public enum DonorType {
 		NULL, INDIVIDUAL, ORGANIZATION
 	}
-	public enum EntityName { // or type 
-		NULL, BLOOD,BONE_MARROW,EYES,HEART,KIDNEY,LIVER
-	}
+	
 	private EntityName entityName;
 	private String DonorId;
 	private rState stateOfEntity;

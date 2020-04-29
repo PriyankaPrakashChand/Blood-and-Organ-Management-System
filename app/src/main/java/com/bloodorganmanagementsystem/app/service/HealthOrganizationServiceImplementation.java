@@ -118,7 +118,7 @@ public class HealthOrganizationServiceImplementation implements HealthOrganizati
 
         catch (Exception e) {
             System.out.println(e.getMessage());
-            return false;
+            throw e;
         }
 
         // must enter interest in donation or receiving or both
@@ -138,7 +138,7 @@ public class HealthOrganizationServiceImplementation implements HealthOrganizati
             return dbOrganization.get().getLisenceKey();
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            return "";
+            throw e;
         }
 
         // TODO Auto-generated method stub
@@ -227,7 +227,7 @@ public class HealthOrganizationServiceImplementation implements HealthOrganizati
             return true;
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            return false;
+            throw e;
         }
 
     }
@@ -295,7 +295,7 @@ public class HealthOrganizationServiceImplementation implements HealthOrganizati
 
         catch (Exception e) {
             System.out.println(e.getMessage());
-            return false;
+           throw e;
         }
     }
 
@@ -367,7 +367,7 @@ public class HealthOrganizationServiceImplementation implements HealthOrganizati
         
           List<ReceivedEntityDetail> detailsR= receiverOrg.getReceivedEntityDetails().stream().filter(detail-> detail.getEntityName().equals(entityDonationDetails.getEntityName())).collect(Collectors.toList());
             
-          for (int i=0;i<detailsD.size();i++){
+          for (int i=0;i<detailsR.size();i++){
             if(detailsR.get(i).getStateOfEntity().equals(rState.WAITING_TO_BE_RECEIVED)){
                 entityReceivedIndex=i;
                 waitingToReceive=true;
@@ -410,7 +410,7 @@ public class HealthOrganizationServiceImplementation implements HealthOrganizati
         
         catch (Exception e) {
             System.out.println(e.getMessage());
-            return false;
+            throw e;
         }
     }
 

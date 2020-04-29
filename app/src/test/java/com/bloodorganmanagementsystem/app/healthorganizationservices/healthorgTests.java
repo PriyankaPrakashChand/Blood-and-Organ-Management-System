@@ -3,8 +3,14 @@ package com.bloodorganmanagementsystem.app.healthorganizationservices;
 import java.util.List;
 
 import com.bloodorganmanagementsystem.app.dto.healthorganizationsdto.IndividualToShow;
+import com.bloodorganmanagementsystem.app.entities.DonationEntityDetail;
 import com.bloodorganmanagementsystem.app.entities.HealthOrganization;
 import com.bloodorganmanagementsystem.app.entities.Individual;
+import com.bloodorganmanagementsystem.app.entities.ReceivedEntityDetail;
+import com.bloodorganmanagementsystem.app.entities.DonationEntityDetail.EntityName;
+import com.bloodorganmanagementsystem.app.entities.DonationEntityDetail.dState;
+import com.bloodorganmanagementsystem.app.entities.HealthOrganization.OrganizationInterest;
+import com.bloodorganmanagementsystem.app.entities.ReceivedEntityDetail.rState;
 import com.bloodorganmanagementsystem.app.repository.HealthOrganizationRepository;
 import com.bloodorganmanagementsystem.app.repository.IndividualRepository;
 import com.bloodorganmanagementsystem.app.service.AppException;
@@ -76,6 +82,7 @@ public class healthorgTests {
       indRepos.save(ind1);
       indRepos.save(ind2);
       indRepos.save(ind3);
+
       healthOrgRepos.save(healthOrg1);
       healthOrgRepos.save(healthOrg2);
 
@@ -83,11 +90,12 @@ public class healthorgTests {
 
    @After
    public void cleanUp() {
-    try  {healthOrgRepos.deleteAll();
-      indRepos.deleteAll();}
-      catch (Exception e){
+      try {
+         healthOrgRepos.deleteAll();
+         indRepos.deleteAll();
+      } catch (Exception e) {
          System.out.println(e.getMessage());
-        
+
       }
    }
 
@@ -100,6 +108,66 @@ public class healthorgTests {
 
    }
 
+   @Test
+   public void addOrganToDonateTest() throws AppException {
+      DonationEntityDetail detail = new DonationEntityDetail();
+      detail.setEntityName(EntityName.BONE_MARROW);
+      healthOrg1.setOrganizationInterest(OrganizationInterest.DONATE);
+      healthOrgRepos.save(healthOrg1);
+      Boolean result = healthOrgSer.addOrganToDonate(detail, healthOrg1.getId());
+      assert (result == true);
+   }
+
+   @Test
+   public void addOrganToDonateInvalidOrgInterestTest() throws AppException {
+      try {
+         DonationEntityDetail detail = new DonationEntityDetail();
+         detail.setEntityName(EntityName.HEART);
+         healthOrg2.setOrganizationInterest(OrganizationInterest.RECEIVE);
+         healthOrg2 = healthOrgRepos.save(healthOrg2);
+         Boolean result = healthOrgSer.addOrganToDonate(detail, healthOrg2.getId());
+
+      } catch (Exception e) {
+         assert (e.getMessage().equals("Invalid Health Organization Interest"));
+      }
+   }
+
+   @Test
+   public void addOrganToReceiveTest() throws AppException {
+      ReceivedEntityDetail detail = new ReceivedEntityDetail();
+      detail.setEntityName(EntityName.BONE_MARROW);
+      healthOrg1.setOrganizationInterest(OrganizationInterest.RECEIVE);
+      healthOrgRepos.save(healthOrg1);
+      Boolean result = healthOrgSer.addOrganToReceive(detail, healthOrg1.getId());
+      assert (result == true);
+   }
+
+
+//**********************DONATION TESTS************************ */
+
+@Test
+public void  donationSuccessTest() throws AppException {
+   healthOrg1.setOrganizationInterest(OrganizationInterest.DONATE);
+   DonationEntityDetail donation = new DonationEntityDetail();
+   donation.setEntityName(EntityName.HEART);
+   healthOrgRepos.save(healthOrg1);
+   healthOrgSer.addOrganToDonate(donation, healthOrg1.getId());
+
+   healthOrg2.setOrganizationInterest(OrganizationInterest.RECEIVE);
+   ReceivedEntityDetail request = new ReceivedEntityDetail();
+   request.setEntityName(EntityName.HEART);
+   healthOrgRepos.save(healthOrg2);
+   healthOrgSer.addOrganToReceive(request, healthOrg2.getId());
+
+   DonationEntityDetail detail =new DonationEntityDetail();
+   detail.setEntityName(EntityName.HEART);
+   detail.setReceiverId(healthOrg2.getId());
    
+boolean result= healthOrgSer.donateOrgan(detail,healthOrg1.getId());
+
+
+   assert (result == true);
+
+}
 
 }
