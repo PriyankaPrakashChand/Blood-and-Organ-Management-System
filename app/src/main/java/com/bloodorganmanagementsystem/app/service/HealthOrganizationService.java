@@ -30,12 +30,12 @@ public interface HealthOrganizationService {
 
    
 
-    public boolean addOrganToDonate(DonationEntityDetail EntityDonationDetails,String healthOrgId) throws AppException;
+    public boolean addOrganToDonate(DonationEntityDetail entityDonationDetails,String healthOrgId) throws AppException;
 
 
     public boolean addOrganToReceive(ReceivedEntityDetail receivedEntityDetails,String healthOrgId) throws AppException;
 
-    public boolean donateOrgan(DonationEntityDetail EntityDonationDetails,String healthOrgId); 
+    public boolean donateOrgan(DonationEntityDetail entityDonationDetails,String healthOrgId) throws AppException; 
 
     public boolean donateBlood(Blood blood,String healthOrgId); // updates list of bloods + donation entitye details
 

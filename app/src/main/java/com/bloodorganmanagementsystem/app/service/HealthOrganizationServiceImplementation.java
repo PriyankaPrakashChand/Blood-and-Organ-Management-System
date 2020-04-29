@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import com.bloodorganmanagementsystem.app.dto.healthorganizationsdto.IndividualToShow;
 import com.bloodorganmanagementsystem.app.entities.Blood;
@@ -212,10 +213,9 @@ public class HealthOrganizationServiceImplementation implements HealthOrganizati
 
             healthOrg.addDonationEntityDetails(entityDonationDetails);
 
-
             // if entity is blood then update blood units available for that blood type
             if (entityDonationDetails.getEntityName().equals(EntityName.BLOOD)) {
-                
+
                 healthOrg.getBloods().stream().filter(
                         blood -> blood.getBloodType() == entityDonationDetails.getBloodDetail().get().getBloodType())
                         .forEach(bloodType -> bloodType.setBloodUnitsRequired(bloodType.getBloodUnitsAvailable()
@@ -300,16 +300,118 @@ public class HealthOrganizationServiceImplementation implements HealthOrganizati
     }
 
     @Override
-    public boolean donateOrgan(DonationEntityDetail EntityDonationDetails, String healthOrgId) {
-        // TODO Auto-generated method stub
+    public boolean donateOrgan(DonationEntityDetail entityDonationDetails, String healthOrgId) throws AppException {
+      try {   // TODO Auto-generated method stub
+        /**
+         * Validate the organization
+         */
+      // 1-if health org does not exist return error
+        Optional<HealthOrganization> dbOrganization = orgRepos.findById(healthOrgId);
 
-        // 1-
+        if (dbOrganization.isEmpty()) {
+            throw new AppException("Health Organization does not exist");
+        }
+
+        HealthOrganization healthOrg = dbOrganization.get();
+
+        // 2- if organization interest is not to donate or both return error
+        if (healthOrg.getOrganizationInterest().equals(OrganizationInterest.RECEIVE)
+                || healthOrg.getOrganizationInterest().equals(OrganizationInterest.NULL)) {
+            throw new AppException("Invalid Health Organization Interest");
+        }
+
+        /**
+         * Validate the entity details
+         */
+
+        // 3- entity name must not be null
+         if (entityDonationDetails.getEntityName().equals(EntityName.NULL)) {
+            throw new AppException("Invalid Entity Chosen");
+        }
+
+        // 4- Only health orgs can receive then they must exist and interested in
+        // receiving or both
+        HealthOrganization receiverOrg;
+
+        receiverOrg = orgRepos.findById(entityDonationDetails.getReceiverId())
+                .orElseThrow(() -> new AppException("Receiver does not exist"));
+
+        // 5- if organization interest is not to receive or both return error
+        if (receiverOrg.getOrganizationInterest().equals(OrganizationInterest.DONATE)
+                || healthOrg.getOrganizationInterest().equals(OrganizationInterest.NULL)) {
+            throw new AppException("Invalid Health Organization Interest");
+        }
+
+        //6- the entity must be present in health orgs donation log and must be available to donate
+        boolean Donationavailable=false;
+        int entityDonationIndex=-1;
+        
+          List<DonationEntityDetail> detailsD= healthOrg.getDonationEntityDetails().stream().filter(detail-> detail.getEntityName().equals(entityDonationDetails.getEntityName())).collect(Collectors.toList());
+            
+          for (int i=0;i<detailsD.size();i++){
+            if(detailsD.get(i).getState().equals(dState.AVAILABLE_TO_DONATE)){
+                entityDonationIndex=i;
+                Donationavailable=true;
+                break;
+            }
+          }
+
+          if (!Donationavailable){
+            throw new AppException("Entity is not  available for donation");  
+          }
+  
+        //7- entity must be present in receivers log waiting to be donated
+
+        boolean waitingToReceive=false;
+        int entityReceivedIndex=-1;
+        
+          List<ReceivedEntityDetail> detailsR= receiverOrg.getReceivedEntityDetails().stream().filter(detail-> detail.getEntityName().equals(entityDonationDetails.getEntityName())).collect(Collectors.toList());
+            
+          for (int i=0;i<detailsD.size();i++){
+            if(detailsR.get(i).getStateOfEntity().equals(rState.WAITING_TO_BE_RECEIVED)){
+                entityReceivedIndex=i;
+                waitingToReceive=true;
+                break;
+            }
+          }
+
+          if (!waitingToReceive){
+            throw new AppException(" Entity is not required by Receiver");  
+          }
+
+        /**
+         * Update the donors log
+         */
+        DonationEntityDetail donationLog= detailsD.get(entityDonationIndex);
+        donationLog.setDateOfDonation(LocalDate.now());
+        donationLog.setReceiverType(ReceiverType.ORGANIZATION);
+        donationLog.setState(dState.HAS_BEEN_DONATED);
+        donationLog.setReceiverId(entityDonationDetails.getReceiverId());
+        healthOrg.getDonationEntityDetails().set(entityDonationIndex, donationLog);
+        orgRepos.save(healthOrg);
+        
 
 
+        
 
-
-
-        return false;
+        /**
+         * Update the receivers log
+         */
+        
+        ReceivedEntityDetail receiverLog=detailsR.get(entityReceivedIndex);
+        receiverLog.setDateOfReceivingDonation(LocalDate.now());
+        receiverLog.setDonorId(healthOrg.getId());
+        receiverLog.setDonorType(DonorType.ORGANIZATION); // for individual donors set it to individual
+        receiverLog.setStateOfEntity(rState.HAS_BEEN_RECEIVED);
+        receiverOrg.getReceivedEntityDetails().set(entityReceivedIndex, receiverLog);
+        orgRepos.save(receiverOrg);
+        return true;
+        }
+        
+        catch (Exception e) {
+            System.out.println(e.getMessage());
+            return false;
+        }
     }
 
     @Override
@@ -325,7 +427,6 @@ public class HealthOrganizationServiceImplementation implements HealthOrganizati
     public boolean recevieOrgan(ReceivedEntityDetail receivedEntityDetails) {
         // TODO Auto-generated method stub
         return false;
-
 
     }
 
