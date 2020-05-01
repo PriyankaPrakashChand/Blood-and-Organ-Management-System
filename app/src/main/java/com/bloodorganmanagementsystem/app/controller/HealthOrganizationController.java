@@ -8,6 +8,7 @@ import com.bloodorganmanagementsystem.app.entities.HealthOrganization;
 import com.bloodorganmanagementsystem.app.entities.MemberDetail;
 import com.bloodorganmanagementsystem.app.entities.HealthOrganization.OrganizationInterest;
 import com.bloodorganmanagementsystem.app.service.HealthOrganizationServiceImplementation;
+import com.bloodorganmanagementsystem.app.service.exception.AppException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -38,45 +39,43 @@ public class HealthOrganizationController {
     // @GetMapping("/P/{orgId}")
     // public String viewOrgProfile(@PathVariable String orgId, Model model) {
 
-    //     // howe we access the class in other folder
-    //     // List<String> list = HealthOrganizations.// get profile
-    //     try {
-    //         //HealthOrgProfile profile = orgSer.viewMyProfile(orgId);
-    //         HealthOrgProfile profile= new HealthOrgProfile(orgId,"234","abc","ppp");
-    //         model.addAttribute("HealthOrg", profile);
+    // // howe we access the class in other folder
+    // // List<String> list = HealthOrganizations.// get profile
+    // try {
+    // //HealthOrgProfile profile = orgSer.viewMyProfile(orgId);
+    // HealthOrgProfile profile= new HealthOrgProfile(orgId,"234","abc","ppp");
+    // model.addAttribute("HealthOrg", profile);
 
-    //         return "healthOrgProfile";
-    //     } catch (Exception e) {
-    //         return e.getMessage();
-    //     }
+    // return "healthOrgProfile";
+    // } catch (Exception e) {
+    // return e.getMessage();
+    // }
     // }
 
+    @GetMapping("/R")
+    public OrgRegisterationDetails PostFunctionsJsonObjects() {
 
-        @GetMapping("/R")
-        public OrgRegisterationDetails PostFunctionsJsonObjects(){
+        OrgRegisterationDetails d = new OrgRegisterationDetails();
+        MemberDetail m = new MemberDetail();
+        m.setAddress("adress");
+        m.setCity("city");
+        m.setCountry("country");
+        m.setPassword("password");
+        m.setPhoneNumber("phoneNumber");
 
-            OrgRegisterationDetails d= new OrgRegisterationDetails();
-            MemberDetail m= new MemberDetail();
-            m.setAddress("adress");
-            m.setCity("city");
-            m.setCountry("country");
-            m.setPassword("password");
-            m.setPhoneNumber("phoneNumber");
+        d.setMemberDetails(m);
+        d.setEmail("email1");
+        d.setOrgName("orgName1");
+        d.setOrganizationInterest(OrganizationInterest.DONATE);
 
-            d.setMemberDetails(m);
-            d.setEmail("email1");
-            d.setOrgName("orgName1");
-            d.setOrganizationInterest(OrganizationInterest.DONATE);
-            
-            return d;
+        return d;
 
-        }
+    }
 
+    @PostMapping("/Register")
+    public String RegisterOrg(@RequestBody OrgRegisterationDetails orgRegisterationDetails) throws AppException {
 
-        @PostMapping("/Register")
-        public String RegisterOrg(@RequestBody OrgRegisterationDetails orgRegisterationDetails){
-
-            try{
+            // try{
 
                 if(orgSer.Register(orgRegisterationDetails)==true){
                     return "Registeration Successfull";
@@ -85,11 +84,11 @@ public class HealthOrganizationController {
                 else {
                     return "Registeration Failed";
                 }
-            }
-            catch(Exception e) {
-                return e.getMessage();
+            // }
+            // catch(Exception e) {
+            //     return e.getMessage();
 
-            }
+            // }
         }
 
 
