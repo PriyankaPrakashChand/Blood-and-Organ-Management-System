@@ -6,7 +6,7 @@ import java.util.UUID;
 
 import com.bloodorganmanagementsystem.app.entities.Blood.BloodType;
 import com.bloodorganmanagementsystem.app.entities.enums.EntityPreference;
-import com.bloodorganmanagementsystem.app.entities.enums.OrganizationInterest;
+// import com.bloodorganmanagementsystem.app.entities.enums.OrganizationInterest;
 import com.microsoft.azure.spring.data.cosmosdb.core.mapping.Document;
 import com.microsoft.azure.spring.data.cosmosdb.core.mapping.PartitionKey;
 

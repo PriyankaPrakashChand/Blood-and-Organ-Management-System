@@ -3,7 +3,9 @@ package com.bloodorganmanagementsystem.app.service;
 import java.util.List;
 import java.util.Optional;
 
+import com.bloodorganmanagementsystem.app.dto.healthorganizationsdto.HealthOrgProfile;
 import com.bloodorganmanagementsystem.app.dto.healthorganizationsdto.IndividualToShow;
+import com.bloodorganmanagementsystem.app.dto.healthorganizationsdto.OrgRegisterationDetails;
 import com.bloodorganmanagementsystem.app.entities.Blood;
 import com.bloodorganmanagementsystem.app.entities.DonationEntityDetail;
 import com.bloodorganmanagementsystem.app.entities.HealthOrganization;
@@ -18,20 +20,17 @@ public interface HealthOrganizationService {
  
     public Optional<HealthOrganization> findById(String findId); 
 
-    public boolean Register(HealthOrganization healthOrganization) throws AppException;
+    public boolean Register(OrgRegisterationDetails orgRegisterationDetails) throws AppException;
 
     public boolean Login(String email, String password)throws AppException;
 
     
-    public String viewMyLicenseKey(String id) throws AppException;  
+    public HealthOrgProfile viewMyProfile(String id) throws AppException;  
 
 
     public List<IndividualToShow> viewMyDonors(String id) throws AppException;
 
-   
-
     public boolean addOrganToDonate(DonationEntityDetail entityDonationDetails,String healthOrgId) throws AppException;
-
 
     public boolean addOrganToReceive(ReceivedEntityDetail receivedEntityDetails,String healthOrgId) throws AppException;
 

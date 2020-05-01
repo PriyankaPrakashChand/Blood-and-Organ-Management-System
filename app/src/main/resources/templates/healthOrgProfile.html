@@ -1,0 +1,42 @@
+<!DOCTYPE HTML>
+
+<html xmlns:th="http://www.thymeleaf.org">
+   <head>
+      <title>Health Organization Profile</title>
+   </head>
+    
+   <style>
+      table th, table td {
+         padding: 5px;
+      }
+      .message {
+         color: blue;
+      }
+   </style>
+    
+   <body>
+    
+      <!-- Include _menu.html  navbar -->
+     <!--   <th:block th:include="/_menu"></th:block>   -->
+       
+      <h2>Profile</h2>
+       
+    
+       
+      <table border="1">
+            <tr>
+               <th> Health Orgnaization ID </th>
+               <th> Health Organiztion Name</th>
+               <th> Health Organization Email </th>
+               <th> Health Organization Address </th>
+
+            </tr>
+               <td th:text="${HealthOrg.id}">...</td>
+               <td th:text="${HealthOrg.name}">...</td>
+               <td th:text="${HealthOrg.email}">...</td>
+               <td th:text="${HealthOrg.address}">...</td>
+            </tr>
+      </table>
+       
+   </body>
+</html>

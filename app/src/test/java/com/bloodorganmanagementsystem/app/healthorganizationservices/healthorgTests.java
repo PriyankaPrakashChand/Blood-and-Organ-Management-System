@@ -3,9 +3,11 @@ package com.bloodorganmanagementsystem.app.healthorganizationservices;
 import java.util.List;
 
 import com.bloodorganmanagementsystem.app.dto.healthorganizationsdto.IndividualToShow;
+import com.bloodorganmanagementsystem.app.dto.healthorganizationsdto.OrgRegisterationDetails;
 import com.bloodorganmanagementsystem.app.entities.DonationEntityDetail;
 import com.bloodorganmanagementsystem.app.entities.HealthOrganization;
 import com.bloodorganmanagementsystem.app.entities.Individual;
+import com.bloodorganmanagementsystem.app.entities.MemberDetail;
 import com.bloodorganmanagementsystem.app.entities.ReceivedEntityDetail;
 import com.bloodorganmanagementsystem.app.entities.DonationEntityDetail.EntityName;
 import com.bloodorganmanagementsystem.app.entities.DonationEntityDetail.dState;
@@ -46,7 +48,7 @@ public class healthorgTests {
 
    HealthOrganization healthOrg1, healthOrg2;
 
-   @Before
+//    @Before
    public void init() {
       healthOrgRepos.deleteAll();
       indRepos.deleteAll();
@@ -58,6 +60,10 @@ public class healthorgTests {
 
       healthOrg1.setEmail("healthOrg1@gmail.com");
       healthOrg2.setEmail("healthOrg2@gmail.com");
+
+
+      healthOrg1.setOrganizationInterest(OrganizationInterest.DONATE);
+      healthOrg2.setOrganizationInterest(OrganizationInterest.RECEIVE);
 
       ind1.setFirstName("ind");
       ind2.setFirstName("ind");
@@ -88,7 +94,7 @@ public class healthorgTests {
 
    }
 
-   @After
+//    @After
    public void cleanUp() {
       try {
          healthOrgRepos.deleteAll();
@@ -112,8 +118,7 @@ public class healthorgTests {
    public void addOrganToDonateTest() throws AppException {
       DonationEntityDetail detail = new DonationEntityDetail();
       detail.setEntityName(EntityName.BONE_MARROW);
-      healthOrg1.setOrganizationInterest(OrganizationInterest.DONATE);
-      healthOrgRepos.save(healthOrg1);
+     
       Boolean result = healthOrgSer.addOrganToDonate(detail, healthOrg1.getId());
       assert (result == true);
    }
@@ -123,8 +128,6 @@ public class healthorgTests {
       try {
          DonationEntityDetail detail = new DonationEntityDetail();
          detail.setEntityName(EntityName.HEART);
-         healthOrg2.setOrganizationInterest(OrganizationInterest.RECEIVE);
-         healthOrg2 = healthOrgRepos.save(healthOrg2);
          Boolean result = healthOrgSer.addOrganToDonate(detail, healthOrg2.getId());
 
       } catch (Exception e) {
@@ -136,9 +139,7 @@ public class healthorgTests {
    public void addOrganToReceiveTest() throws AppException {
       ReceivedEntityDetail detail = new ReceivedEntityDetail();
       detail.setEntityName(EntityName.BONE_MARROW);
-      healthOrg1.setOrganizationInterest(OrganizationInterest.RECEIVE);
-      healthOrgRepos.save(healthOrg1);
-      Boolean result = healthOrgSer.addOrganToReceive(detail, healthOrg1.getId());
+      Boolean result = healthOrgSer.addOrganToReceive(detail, healthOrg2.getId());
       assert (result == true);
    }
 
@@ -147,16 +148,14 @@ public class healthorgTests {
 
 @Test
 public void  donationSuccessTest() throws AppException {
-   healthOrg1.setOrganizationInterest(OrganizationInterest.DONATE);
+   
    DonationEntityDetail donation = new DonationEntityDetail();
    donation.setEntityName(EntityName.HEART);
-   healthOrgRepos.save(healthOrg1);
    healthOrgSer.addOrganToDonate(donation, healthOrg1.getId());
 
-   healthOrg2.setOrganizationInterest(OrganizationInterest.RECEIVE);
+  
    ReceivedEntityDetail request = new ReceivedEntityDetail();
    request.setEntityName(EntityName.HEART);
-   healthOrgRepos.save(healthOrg2);
    healthOrgSer.addOrganToReceive(request, healthOrg2.getId());
 
    DonationEntityDetail detail =new DonationEntityDetail();
@@ -170,4 +169,23 @@ boolean result= healthOrgSer.donateOrgan(detail,healthOrg1.getId());
 
 }
 
+@Test
+public void RegisterationControllerTest() throws AppException {
+
+    OrgRegisterationDetails d= new OrgRegisterationDetails();
+    MemberDetail m= new MemberDetail();
+    m.setAddress("adress");
+    m.setCity("city");
+    m.setCountry("country");
+    m.setPassword("password");
+    m.setPhoneNumber("phoneNumber");
+
+    d.setMemberDetails(m);
+    d.setEmail("email1");
+    d.setOrgName("orgName1");
+    d.setOrganizationInterest(OrganizationInterest.DONATE);
+
+    assert(healthOrgSer.Register(d)==true);
+
+}
 }
