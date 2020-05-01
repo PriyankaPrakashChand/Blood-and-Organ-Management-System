@@ -4,7 +4,7 @@ import javax.websocket.server.PathParam;
 
 import com.bloodorganmanagementsystem.app.dto.IndividualProfileToShow;
 import com.bloodorganmanagementsystem.app.entities.Individual;
-import com.bloodorganmanagementsystem.app.service.AppException;
+import com.bloodorganmanagementsystem.app.service.exception.AppException;
 import com.bloodorganmanagementsystem.app.service.IndividualService;
 
 import org.springframework.beans.factory.annotation.Autowired;

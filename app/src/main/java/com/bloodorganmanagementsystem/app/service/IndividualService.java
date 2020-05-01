@@ -9,6 +9,7 @@ import com.bloodorganmanagementsystem.app.dto.IndividualDetails;
 import com.bloodorganmanagementsystem.app.dto.IndividualProfileToGet;
 import com.bloodorganmanagementsystem.app.dto.IndividualProfileToShow;
 import com.bloodorganmanagementsystem.app.entities.Individual;
+import com.bloodorganmanagementsystem.app.service.exception.AppException;
 import com.bloodorganmanagementsystem.app.entities.BodyTest;
 
 import org.springframework.stereotype.Service;

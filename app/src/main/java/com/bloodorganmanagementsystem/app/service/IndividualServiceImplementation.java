@@ -1,4 +1,5 @@
 package com.bloodorganmanagementsystem.app.service;
+
 import com.bloodorganmanagementsystem.app.entities.BodyTest.TestName;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -23,6 +24,7 @@ import com.bloodorganmanagementsystem.app.entities.BodyTest;
 import com.bloodorganmanagementsystem.app.entities.Blood.BloodType;
 import com.bloodorganmanagementsystem.app.repository.HealthOrganizationRepository;
 import com.bloodorganmanagementsystem.app.repository.IndividualRepository;
+import com.bloodorganmanagementsystem.app.service.exception.AppException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

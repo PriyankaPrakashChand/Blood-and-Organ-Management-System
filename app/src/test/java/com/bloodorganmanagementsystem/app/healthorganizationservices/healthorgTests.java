@@ -15,7 +15,7 @@ import com.bloodorganmanagementsystem.app.entities.HealthOrganization.Organizati
 import com.bloodorganmanagementsystem.app.entities.ReceivedEntityDetail.rState;
 import com.bloodorganmanagementsystem.app.repository.HealthOrganizationRepository;
 import com.bloodorganmanagementsystem.app.repository.IndividualRepository;
-import com.bloodorganmanagementsystem.app.service.AppException;
+import com.bloodorganmanagementsystem.app.service.exception.AppException;
 import com.bloodorganmanagementsystem.app.service.HealthOrganizationServiceImplementation;
 import com.bloodorganmanagementsystem.app.service.IndividualServiceImplementation;
 
