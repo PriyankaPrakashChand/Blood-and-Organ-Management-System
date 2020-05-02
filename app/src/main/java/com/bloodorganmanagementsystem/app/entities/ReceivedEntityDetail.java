@@ -27,13 +27,8 @@ public class ReceivedEntityDetail {
 	private LocalDate dateOfReceivingDonation;
 	private DonorType DonorType; // did the org receive from another org or an individual
 	private Optional<BloodTypeQty> bloodDetail;
-	@Data
-	public class BloodTypeQty{
-		Integer Qty;
-		BloodType bloodType;
-
-
-	}
+	
+	
 
 
 	

@@ -10,8 +10,9 @@ public class HealthOrgProfile {
 
     String id;
     String name;
-     String email;
-     String address;
+    String email;
+    String licenceKey;
+    String address;
 
 }
 

@@ -3,6 +3,8 @@ package com.bloodorganmanagementsystem.app.service;
 import java.util.List;
 import java.util.Optional;
 
+import com.bloodorganmanagementsystem.app.dto.healthorganizationsdto.Donation;
+import com.bloodorganmanagementsystem.app.dto.healthorganizationsdto.DonationDetail;
 import com.bloodorganmanagementsystem.app.dto.healthorganizationsdto.HealthOrgProfile;
 import com.bloodorganmanagementsystem.app.dto.healthorganizationsdto.IndividualToShow;
 import com.bloodorganmanagementsystem.app.dto.healthorganizationsdto.OrgRegisterationDetails;
@@ -31,15 +33,13 @@ public interface HealthOrganizationService {
 
     public List<IndividualToShow> viewMyDonors(String id) throws AppException;
 
-    public boolean addOrganToDonate(DonationEntityDetail entityDonationDetails,String healthOrgId) throws AppException;
+    public boolean addEntityToDonate(DonationDetail donationDetails,String healthOrgId) throws AppException;
 
-    public boolean addOrganToReceive(ReceivedEntityDetail receivedEntityDetails,String healthOrgId) throws AppException;
+    public boolean addEntityToReceive(DonationDetail requestDetails,String healthOrgId) throws AppException;
 
-    public boolean donateOrgan(DonationEntityDetail entityDonationDetails,String healthOrgId) throws AppException; 
+    public boolean donateOrgan(Donation donation,String healthOrgId) throws AppException; 
 
     public boolean donateBlood(Blood blood,String healthOrgId); // updates list of bloods + donation entitye details
-
-    public boolean recevieOrgan(ReceivedEntityDetail receivedEntityDetails); // updates donated entitiy detials 
 
     public boolean receiveBlood(Blood blood,String healthOrgId); // updates list of bloods + receiver entity details of the heath org + donor entity details of the donor
 

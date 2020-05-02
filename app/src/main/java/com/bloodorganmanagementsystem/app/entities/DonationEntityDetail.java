@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import com.bloodorganmanagementsystem.app.entities.ReceivedEntityDetail.BloodTypeQty;
+import com.bloodorganmanagementsystem.app.entities.BloodTypeQty;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

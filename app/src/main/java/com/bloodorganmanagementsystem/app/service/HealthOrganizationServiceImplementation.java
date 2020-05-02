@@ -10,6 +10,9 @@ import java.util.stream.Collectors;
 import com.bloodorganmanagementsystem.app.dto.healthorganizationsdto.HealthOrgProfile;
 import com.bloodorganmanagementsystem.app.dto.healthorganizationsdto.IndividualToShow;
 import com.bloodorganmanagementsystem.app.dto.healthorganizationsdto.OrgRegisterationDetails;
+import com.bloodorganmanagementsystem.app.dto.healthorganizationsdto.Donation;
+import com.bloodorganmanagementsystem.app.dto.healthorganizationsdto.DonationDetail;
+
 import com.bloodorganmanagementsystem.app.entities.Blood;
 import com.bloodorganmanagementsystem.app.entities.DonationEntityDetail;
 import com.bloodorganmanagementsystem.app.entities.HealthOrganization;
@@ -20,7 +23,7 @@ import com.bloodorganmanagementsystem.app.entities.DonationEntityDetail.EntityNa
 import com.bloodorganmanagementsystem.app.entities.DonationEntityDetail.ReceiverType;
 import com.bloodorganmanagementsystem.app.entities.DonationEntityDetail.dState;
 import com.bloodorganmanagementsystem.app.entities.HealthOrganization.OrganizationInterest;
-import com.bloodorganmanagementsystem.app.entities.ReceivedEntityDetail.BloodTypeQty;
+import com.bloodorganmanagementsystem.app.entities.BloodTypeQty;
 import com.bloodorganmanagementsystem.app.entities.ReceivedEntityDetail.DonorType;
 import com.bloodorganmanagementsystem.app.entities.ReceivedEntityDetail.rState;
 import com.bloodorganmanagementsystem.app.repository.HealthOrganizationRepository;
@@ -158,7 +161,7 @@ public class HealthOrganizationServiceImplementation implements HealthOrganizati
 
             // 2- return license key
             HealthOrganization org = dbOrganization.get();
-            HealthOrgProfile profile = new HealthOrgProfile(org.getId(), org.getOrgName(), org.getEmail(),
+            HealthOrgProfile profile = new HealthOrgProfile(org.getId(), org.getOrgName(), org.getEmail(),org.getLisenceKey(),
                     org.getMemberDetails().getAddress());
             return profile;
 
@@ -193,24 +196,24 @@ public class HealthOrganizationServiceImplementation implements HealthOrganizati
     }
 
     @Override
-    public boolean addOrganToDonate(DonationEntityDetail entityDonationDetails, String healthOrgId)
+    public boolean addEntityToDonate(DonationDetail donationDetails, String healthOrgId)
             throws AppException {
         // TODO Auto-generated method stub
 
         try {
 
             // 1- if entitiy name is invalid return error
-            if (entityDonationDetails.getEntityName().equals(EntityName.NULL)) {
+            if (donationDetails.getEntityName().equals(EntityName.NULL)) {
                 throw new AppException("Invalid Entity Chosen");
             }
 
             // 1.1 if entity is blood then qty mustbe>0 and type must not be null
-            if (entityDonationDetails.getEntityName().equals(EntityName.BLOOD)) {
-                if (entityDonationDetails.getBloodDetail().isEmpty()) {
+            if (donationDetails.getEntityName().equals(EntityName.BLOOD)) {
+                if (donationDetails.getBloodDetail()==null||donationDetails.getBloodDetail().isEmpty()) {
                     throw new AppException("Blood Details must be filled");
                 }
 
-                BloodTypeQty bloodDetail = entityDonationDetails.getBloodDetail().get();
+                BloodTypeQty bloodDetail = donationDetails.getBloodDetail().get();
                 if (bloodDetail.getBloodType().equals(BloodType.NULL) || bloodDetail.getQty() < 1) {
                     throw new AppException("Invalid blood details");
                 }
@@ -232,22 +235,26 @@ public class HealthOrganizationServiceImplementation implements HealthOrganizati
             // nothing specific
 
             // purpose is to add this entity and make it available for donation
-            entityDonationDetails.setState(dState.AVAILABLE_TO_DONATE);
-            entityDonationDetails.setReceiverType(ReceiverType.NULL);
-            entityDonationDetails.setReceiverId(null);
-            entityDonationDetails.setDateOfDonation(null);
+            DonationEntityDetail details= new DonationEntityDetail();
+            details.setEntityName(donationDetails.getEntityName());
+            details.setState(dState.AVAILABLE_TO_DONATE);
+            details.setReceiverType(ReceiverType.NULL);
+            details.setReceiverId(null);
+            details.setDateOfDonation(null);
+            details.setBloodDetail(null);
 
-            healthOrg.addDonationEntityDetails(entityDonationDetails);
+            
 
             // if entity is blood then update blood units available for that blood type
-            if (entityDonationDetails.getEntityName().equals(EntityName.BLOOD)) {
-
+            if (donationDetails.getEntityName().equals(EntityName.BLOOD)) {
+                details.setBloodDetail(donationDetails.getBloodDetail());
                 healthOrg.getBloods().stream().filter(
-                        blood -> blood.getBloodType() == entityDonationDetails.getBloodDetail().get().getBloodType())
-                        .forEach(bloodType -> bloodType.setBloodUnitsRequired(bloodType.getBloodUnitsAvailable()
-                                + entityDonationDetails.getBloodDetail().get().getQty()));
+                        blood -> blood.getBloodType() == donationDetails.getBloodDetail().get().getBloodType())
+                        .forEach(bloodType -> bloodType.setBloodUnitsAvailable(bloodType.getBloodUnitsAvailable()
+                                + donationDetails.getBloodDetail().get().getQty()));
 
             }
+            healthOrg.addDonationEntityDetails(details);
             orgRepos.save(healthOrg);
 
             return true;
@@ -259,22 +266,22 @@ public class HealthOrganizationServiceImplementation implements HealthOrganizati
     }
 
     @Override
-    public boolean addOrganToReceive(ReceivedEntityDetail receivedEntityDetails, String healthOrgId)
+    public boolean addEntityToReceive(DonationDetail requestDetails, String healthOrgId)
             throws AppException {
         // TODO Auto-generated method stub
         try {
             // 1- entity name should not be null
-            if (receivedEntityDetails.getEntityName().equals(EntityName.NULL)) {
+            if (requestDetails.getEntityName().equals(EntityName.NULL)) {
                 throw new AppException("Invalid Entity Chosen");
             }
 
             // 1.1 if entity is blood then qty mustbe>0 and type must not be null
-            if (receivedEntityDetails.getEntityName().equals(EntityName.BLOOD)) {
-                if (receivedEntityDetails.getBloodDetail().isEmpty()) {
+            if (requestDetails.getEntityName().equals(EntityName.BLOOD)) {
+                if (requestDetails.getBloodDetail().isEmpty()) {
                     throw new AppException("Blood Details must be filled");
                 }
 
-                BloodTypeQty bloodDetail = receivedEntityDetails.getBloodDetail().get();
+                BloodTypeQty bloodDetail = requestDetails.getBloodDetail().get();
                 if (bloodDetail.getBloodType().equals(BloodType.NULL) || bloodDetail.getQty() < 1) {
                     throw new AppException("Invalid blood details");
                 }
@@ -298,22 +305,26 @@ public class HealthOrganizationServiceImplementation implements HealthOrganizati
 
             // not checking their preferences because thats just a part of their profile
             // nothing specific
-
-            receivedEntityDetails.setStateOfEntity(rState.WAITING_TO_BE_RECEIVED);
-            receivedEntityDetails.setDateOfReceivingDonation(null);
-            receivedEntityDetails.setDonorType(DonorType.NULL); // because didnt receive yet - only adding to the list
-            receivedEntityDetails.setDonorId(null);
-            healthOrg.addReceivedEntityDetails(receivedEntityDetails);
+           ReceivedEntityDetail details= new ReceivedEntityDetail();
+           details.setEntityName(requestDetails.getEntityName());
+           details.setStateOfEntity(rState.WAITING_TO_BE_RECEIVED);
+           details.setDateOfReceivingDonation(null);
+           details.setDonorType(DonorType.NULL); // because didnt receive yet - only adding to the list
+           details.setDonorId(null);
+           details.setBloodDetail(null);
+           
 
             // if entity is blood then update blood units required for that blood type
-            if (receivedEntityDetails.getEntityName().equals(EntityName.BLOOD)) {
+            if (requestDetails.getEntityName().equals(EntityName.BLOOD)) {
+                details.setBloodDetail(requestDetails.getBloodDetail());
                 healthOrg.getBloods().stream().filter(
-                        blood -> blood.getBloodType() == receivedEntityDetails.getBloodDetail().get().getBloodType())
+                        blood -> blood.getBloodType() == requestDetails.getBloodDetail().get().getBloodType())
                         .forEach(bloodType -> bloodType.setBloodUnitsRequired(bloodType.getBloodUnitsRequired()
-                                + receivedEntityDetails.getBloodDetail().get().getQty()));
+                                + requestDetails.getBloodDetail().get().getQty()));
 
             }
-
+            
+            healthOrg.addReceivedEntityDetails(details);
             orgRepos.save(healthOrg);
 
             return true;
@@ -326,7 +337,7 @@ public class HealthOrganizationServiceImplementation implements HealthOrganizati
     }
 
     @Override
-    public boolean donateOrgan(DonationEntityDetail entityDonationDetails, String healthOrgId) throws AppException {
+    public boolean donateOrgan(Donation donation, String healthOrgId) throws AppException {
         try { // TODO Auto-generated method stub
             /**
              * Validate the organization
@@ -351,7 +362,7 @@ public class HealthOrganizationServiceImplementation implements HealthOrganizati
              */
 
             // 3- entity name must not be null
-            if (entityDonationDetails.getEntityName().equals(EntityName.NULL)) {
+            if (donation.getEntityName().equals(EntityName.NULL)) {
                 throw new AppException("Invalid Entity Chosen");
             }
 
@@ -359,7 +370,7 @@ public class HealthOrganizationServiceImplementation implements HealthOrganizati
             // receiving or both
             HealthOrganization receiverOrg;
 
-            receiverOrg = orgRepos.findById(entityDonationDetails.getReceiverId())
+            receiverOrg = orgRepos.findById(donation.getReceiverId())
                     .orElseThrow(() -> new AppException("Receiver does not exist"));
 
             // 5- if organization interest is not to receive or both return error
@@ -374,7 +385,7 @@ public class HealthOrganizationServiceImplementation implements HealthOrganizati
             int entityDonationIndex = -1;
 
             List<DonationEntityDetail> detailsD = healthOrg.getDonationEntityDetails().stream()
-                    .filter(detail -> detail.getEntityName().equals(entityDonationDetails.getEntityName()))
+                    .filter(detail -> detail.getEntityName().equals(donation.getEntityName()))
                     .collect(Collectors.toList());
 
             for (int i = 0; i < detailsD.size(); i++) {
@@ -395,7 +406,7 @@ public class HealthOrganizationServiceImplementation implements HealthOrganizati
             int entityReceivedIndex = -1;
 
             List<ReceivedEntityDetail> detailsR = receiverOrg.getReceivedEntityDetails().stream()
-                    .filter(detail -> detail.getEntityName().equals(entityDonationDetails.getEntityName()))
+                    .filter(detail -> detail.getEntityName().equals(donation.getEntityName()))
                     .collect(Collectors.toList());
 
             for (int i = 0; i < detailsR.size(); i++) {
@@ -417,7 +428,7 @@ public class HealthOrganizationServiceImplementation implements HealthOrganizati
             donationLog.setDateOfDonation(LocalDate.now());
             donationLog.setReceiverType(ReceiverType.ORGANIZATION);
             donationLog.setState(dState.HAS_BEEN_DONATED);
-            donationLog.setReceiverId(entityDonationDetails.getReceiverId());
+            donationLog.setReceiverId(donation.getReceiverId());
             healthOrg.getDonationEntityDetails().set(entityDonationIndex, donationLog);
             orgRepos.save(healthOrg);
 
@@ -450,12 +461,7 @@ public class HealthOrganizationServiceImplementation implements HealthOrganizati
         return false;
     }
 
-    @Override
-    public boolean recevieOrgan(ReceivedEntityDetail receivedEntityDetails) {
-        // TODO Auto-generated method stub
-        return false;
-
-    }
+   
 
     @Override
     public boolean receiveBlood(Blood blood, String healthOrgId) {

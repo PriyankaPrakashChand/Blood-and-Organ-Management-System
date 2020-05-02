@@ -3,9 +3,11 @@ package com.bloodorganmanagementsystem.app.service.exception;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.ExceptionMapper;
+import javax.ws.rs.ext.Provider;
 
 import com.bloodorganmanagementsystem.app.dto.ErrorMessage;
 
+@Provider
 public class AppExceptionMapper implements ExceptionMapper<Throwable> {
     /**
      * Builds and exception to send as rest

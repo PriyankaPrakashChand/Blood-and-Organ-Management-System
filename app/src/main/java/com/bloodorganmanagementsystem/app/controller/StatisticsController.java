@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-@RequestMapping("/Stats")
+@RequestMapping("/")
 public class StatisticsController {
 
     @RequestMapping("/{entityName}")
