@@ -39,7 +39,7 @@ import lombok.Data;
 // import org.springframework.stereotype.Service;
 
 @Service
-@Data
+
 public class HealthOrganizationServiceImplementation implements HealthOrganizationService {
 
     IndividualRepository indRepos;
