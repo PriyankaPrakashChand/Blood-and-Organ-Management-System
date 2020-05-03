@@ -23,15 +23,6 @@ public class StatisticsController {
         return new Donation(EntityName.HEART,"iii");
         
     }
-    @RequestMapping("/{entityName}")
-    public Integer getTotalDonationCount(@PathVariable String entityName) {
-        return 50;
-    }
-
-    @RequestMapping("/Entity/{entityName}")
-    public EntityStatistic viewEntityStats(@PathVariable String entityName) {
-        return new EntityStatistic("Donations till Date", 50);
-
-    }
+    
 
 }

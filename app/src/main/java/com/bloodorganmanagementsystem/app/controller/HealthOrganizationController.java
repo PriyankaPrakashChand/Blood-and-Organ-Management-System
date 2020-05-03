@@ -1,11 +1,13 @@
 package com.bloodorganmanagementsystem.app.controller;
 
-import javax.validation.Valid;
+import java.util.List;
 
+import javax.validation.Valid;
 
 import com.bloodorganmanagementsystem.app.dto.healthorganizationsdto.Donation;
 import com.bloodorganmanagementsystem.app.dto.healthorganizationsdto.DonationDetail;
 import com.bloodorganmanagementsystem.app.dto.healthorganizationsdto.HealthOrgProfile;
+import com.bloodorganmanagementsystem.app.dto.healthorganizationsdto.IndividualToShow;
 import com.bloodorganmanagementsystem.app.dto.healthorganizationsdto.OrgLogin;
 import com.bloodorganmanagementsystem.app.dto.healthorganizationsdto.OrgRegisterationDetails;
 import com.bloodorganmanagementsystem.app.service.HealthOrganizationServiceImplementation;
@@ -87,6 +89,15 @@ public class HealthOrganizationController {
 
     }
 
+
+    @GetMapping("ViewDonors/{orgId}")
+    public List<IndividualToShow>  viewMyDonors(@PathVariable String orgId)
+            throws AppException {
+
+      return orgSer.viewMyDonors(orgId);
+        
+
+    }
     
 
 }
