@@ -57,8 +57,9 @@ public class Individual {
 	// Details to be filed while Entity has been donated
 	private List<DonationEntityDetail> donationEntityDetails;
 	private static Role role = Role.IND;
+	LocalDate dataOFLastProfileUpdate;
 
-	/**
+	/**s
 	 * NoArgsConstructor
 	 */
 	public Individual() {
@@ -67,7 +68,7 @@ public class Individual {
 		this.password = new String(""); // F:should I keep it like this?
 		this.email = UUID.randomUUID().toString();
 		this.memeberDetails = new MemberDetail("", "", "", "", "");
-		this.bloodDetails = new Blood(BloodType.NULL, 20, 20,0);
+		this.bloodDetails = new Blood(BloodType.NULL, 0, 0,0);
 		this.appliedLicenseKey = this.lastName = this.firstName = "";
 		this.birthday = LocalDate.now();
 		List<DonationPreference> dP = new ArrayList<DonationPreference>();
@@ -81,6 +82,7 @@ public class Individual {
 		DonationEntityDetail dE = new DonationEntityDetail();
 		List<DonationEntityDetail> dEs = new ArrayList<DonationEntityDetail>();
 		this.donationEntityDetails = dEs;
+		this.dataOFLastProfileUpdate=LocalDate.now();
 
 	}
 

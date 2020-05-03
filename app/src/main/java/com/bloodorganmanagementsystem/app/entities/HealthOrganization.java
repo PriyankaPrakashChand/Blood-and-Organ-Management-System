@@ -2,7 +2,7 @@ package com.bloodorganmanagementsystem.app.entities;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
+
 
 import com.bloodorganmanagementsystem.app.entities.Blood.BloodType;
 import com.bloodorganmanagementsystem.app.entities.enums.EntityPreference;

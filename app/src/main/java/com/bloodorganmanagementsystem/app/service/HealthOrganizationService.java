@@ -9,10 +9,8 @@ import com.bloodorganmanagementsystem.app.dto.healthorganizationsdto.HealthOrgPr
 import com.bloodorganmanagementsystem.app.dto.healthorganizationsdto.IndividualToShow;
 import com.bloodorganmanagementsystem.app.dto.healthorganizationsdto.OrgRegisterationDetails;
 import com.bloodorganmanagementsystem.app.entities.Blood;
-import com.bloodorganmanagementsystem.app.entities.DonationEntityDetail;
+
 import com.bloodorganmanagementsystem.app.entities.HealthOrganization;
-import com.bloodorganmanagementsystem.app.entities.Individual;
-import com.bloodorganmanagementsystem.app.entities.ReceivedEntityDetail;
 import com.bloodorganmanagementsystem.app.service.exception.AppException;
 
 import org.springframework.stereotype.Service;

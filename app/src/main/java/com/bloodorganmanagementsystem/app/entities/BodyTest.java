@@ -1,7 +1,8 @@
 package com.bloodorganmanagementsystem.app.entities;
 
-import java.util.Date;
-import java.util.List;
+
+import java.time.LocalDate;
+
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,6 +21,6 @@ public class BodyTest {
 
 	private TestName testName;
 	private boolean hasPassed;
-	private Date dateOFLastUpdate;
+	private LocalDate dateOFLastUpdate;
 
 }

@@ -3,7 +3,7 @@ package com.bloodorganmanagementsystem.app.entities;
 import java.time.LocalDate;
 import java.util.Optional;
 
-import com.bloodorganmanagementsystem.app.entities.Blood.BloodType;
+
 import com.bloodorganmanagementsystem.app.entities.DonationEntityDetail.EntityName;
 
 import lombok.AllArgsConstructor;

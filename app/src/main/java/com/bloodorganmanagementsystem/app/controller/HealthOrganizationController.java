@@ -1,25 +1,17 @@
 package com.bloodorganmanagementsystem.app.controller;
 
 import javax.validation.Valid;
-import javax.websocket.server.PathParam;
 
-import com.bloodorganmanagementsystem.app.dto.Donation;
+
+import com.bloodorganmanagementsystem.app.dto.healthorganizationsdto.Donation;
 import com.bloodorganmanagementsystem.app.dto.healthorganizationsdto.DonationDetail;
 import com.bloodorganmanagementsystem.app.dto.healthorganizationsdto.HealthOrgProfile;
 import com.bloodorganmanagementsystem.app.dto.healthorganizationsdto.OrgLogin;
 import com.bloodorganmanagementsystem.app.dto.healthorganizationsdto.OrgRegisterationDetails;
-import com.bloodorganmanagementsystem.app.entities.HealthOrganization;
-import com.bloodorganmanagementsystem.app.entities.MemberDetail;
-import com.bloodorganmanagementsystem.app.entities.Blood.BloodType;
-import com.bloodorganmanagementsystem.app.entities.DonationEntityDetail.EntityName;
-import com.bloodorganmanagementsystem.app.entities.HealthOrganization.OrganizationInterest;
-import com.bloodorganmanagementsystem.app.entities.BloodTypeQty;
 import com.bloodorganmanagementsystem.app.service.HealthOrganizationServiceImplementation;
 import com.bloodorganmanagementsystem.app.service.exception.AppException;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -42,22 +34,6 @@ public class HealthOrganizationController {
     public HealthOrganizationController(HealthOrganizationServiceImplementation orgSer) {
         this.orgSer = orgSer;
     }
-
-    // @GetMapping("/P/{orgId}")
-    // public String viewOrgProfile(@PathVariable String orgId, Model model) {
-
-    // // howe we access the class in other folder
-    // // List<String> list = HealthOrganizations.// get profile
-    // try {
-    // //HealthOrgProfile profile = orgSer.viewMyProfile(orgId);
-    // HealthOrgProfile profile= new HealthOrgProfile(orgId,"234","abc","ppp");
-    // model.addAttribute("HealthOrg", profile);
-
-    // return "healthOrgProfile";
-    // } catch (Exception e) {
-    // return e.getMessage();
-    // }
-    // }
 
     
 
@@ -103,10 +79,10 @@ public class HealthOrganizationController {
     }
 
     @PostMapping("/Donation/{donorOrgId}")
-    public String Donation(@PathVariable String donorOrgId, @Valid @RequestBody Donation detail)
+    public String Donation(@PathVariable String donorOrgId, @Valid @RequestBody Donation donation)
             throws AppException {
 
-        // orgSer.addEntityToReceive(detail, donorOrgId);
+        orgSer.donateOrgan(donation, donorOrgId);
         return " Donation was successfull";
 
     }

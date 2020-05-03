@@ -346,7 +346,7 @@ public class HealthOrganizationServiceImplementation implements HealthOrganizati
             Optional<HealthOrganization> dbOrganization = orgRepos.findById(healthOrgId);
 
             if (dbOrganization.isEmpty()) {
-                throw new AppException("Health Organization does not exist");
+                throw new AppException(" Donor Health Organization does not exist");
             }
 
             HealthOrganization healthOrg = dbOrganization.get();
@@ -354,7 +354,7 @@ public class HealthOrganizationServiceImplementation implements HealthOrganizati
             // 2- if organization interest is not to donate or both return error
             if (healthOrg.getOrganizationInterest().equals(OrganizationInterest.RECEIVE)
                     || healthOrg.getOrganizationInterest().equals(OrganizationInterest.NULL)) {
-                throw new AppException("Invalid Health Organization Interest");
+                throw new AppException("Invalid Donor Health Organization Interest");
             }
 
             /**
@@ -371,77 +371,62 @@ public class HealthOrganizationServiceImplementation implements HealthOrganizati
             HealthOrganization receiverOrg;
 
             receiverOrg = orgRepos.findById(donation.getReceiverId())
-                    .orElseThrow(() -> new AppException("Receiver does not exist"));
+                    .orElseThrow(() -> new AppException("Receiver Organization does not exist"));
 
             // 5- if organization interest is not to receive or both return error
             if (receiverOrg.getOrganizationInterest().equals(OrganizationInterest.DONATE)
                     || healthOrg.getOrganizationInterest().equals(OrganizationInterest.NULL)) {
-                throw new AppException("Invalid Health Organization Interest");
+                throw new AppException("Invalid Receiver Health Organization Interest");
             }
 
             // 6- the entity must be present in health orgs donation log and must be
             // available to donate
-            boolean Donationavailable = false;
-            int entityDonationIndex = -1;
-
+           
             List<DonationEntityDetail> detailsD = healthOrg.getDonationEntityDetails().stream()
-                    .filter(detail -> detail.getEntityName().equals(donation.getEntityName()))
+                    .filter(detail -> detail.getEntityName().equals(donation.getEntityName()) && detail.getState().equals(dState.AVAILABLE_TO_DONATE))
                     .collect(Collectors.toList());
 
-            for (int i = 0; i < detailsD.size(); i++) {
-                if (detailsD.get(i).getState().equals(dState.AVAILABLE_TO_DONATE)) {
-                    entityDonationIndex = i;
-                    Donationavailable = true;
-                    break;
-                }
-            }
 
-            if (!Donationavailable) {
-                throw new AppException("Entity is not  available for donation");
+            if (detailsD.isEmpty()) {
+                throw new AppException("Entity is not available for donation");
             }
 
             // 7- entity must be present in receivers log waiting to be donated
 
-            boolean waitingToReceive = false;
-            int entityReceivedIndex = -1;
-
+            
+                    
             List<ReceivedEntityDetail> detailsR = receiverOrg.getReceivedEntityDetails().stream()
-                    .filter(detail -> detail.getEntityName().equals(donation.getEntityName()))
+                    .filter(detail -> detail.getEntityName().equals(donation.getEntityName())  && detail.getStateOfEntity().equals(rState.WAITING_TO_BE_RECEIVED))
                     .collect(Collectors.toList());
 
-            for (int i = 0; i < detailsR.size(); i++) {
-                if (detailsR.get(i).getStateOfEntity().equals(rState.WAITING_TO_BE_RECEIVED)) {
-                    entityReceivedIndex = i;
-                    waitingToReceive = true;
-                    break;
-                }
-            }
+           
 
-            if (!waitingToReceive) {
+            if (detailsR.isEmpty()) {
                 throw new AppException(" Entity is not required by Receiver");
             }
 
             /**
              * Update the donors log
              */
-            DonationEntityDetail donationLog = detailsD.get(entityDonationIndex);
+            healthOrg.getDonationEntityDetails().remove(detailsD.stream().findFirst().get());
+            DonationEntityDetail donationLog = detailsD.stream().findFirst().get();
             donationLog.setDateOfDonation(LocalDate.now());
             donationLog.setReceiverType(ReceiverType.ORGANIZATION);
             donationLog.setState(dState.HAS_BEEN_DONATED);
             donationLog.setReceiverId(donation.getReceiverId());
-            healthOrg.getDonationEntityDetails().set(entityDonationIndex, donationLog);
+            healthOrg.getDonationEntityDetails().add(donationLog);
             orgRepos.save(healthOrg);
 
             /**
              * Update the receivers log
              */
-
-            ReceivedEntityDetail receiverLog = detailsR.get(entityReceivedIndex);
+            healthOrg.getReceivedEntityDetails().remove(detailsR.stream().findFirst().get());
+            ReceivedEntityDetail receiverLog = detailsR.stream().findFirst().get();
             receiverLog.setDateOfReceivingDonation(LocalDate.now());
             receiverLog.setDonorId(healthOrg.getId());
             receiverLog.setDonorType(DonorType.ORGANIZATION); // for individual donors set it to individual
             receiverLog.setStateOfEntity(rState.HAS_BEEN_RECEIVED);
-            receiverOrg.getReceivedEntityDetails().set(entityReceivedIndex, receiverLog);
+            receiverOrg.getReceivedEntityDetails().add(receiverLog);
             orgRepos.save(receiverOrg);
             return true;
         }

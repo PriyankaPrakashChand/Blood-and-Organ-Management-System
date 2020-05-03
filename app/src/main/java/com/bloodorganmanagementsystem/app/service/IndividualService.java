@@ -3,6 +3,7 @@ package com.bloodorganmanagementsystem.app.service;
 import java.util.List;
 import java.util.Optional;
 
+import com.bloodorganmanagementsystem.app.dto.BodyTestDetails;
 import com.bloodorganmanagementsystem.app.dto.Donation;
 import com.bloodorganmanagementsystem.app.dto.DonationFromIndividual;
 import com.bloodorganmanagementsystem.app.dto.IndividualDetails;
@@ -10,7 +11,7 @@ import com.bloodorganmanagementsystem.app.dto.IndividualProfileToGet;
 import com.bloodorganmanagementsystem.app.dto.IndividualProfileToShow;
 import com.bloodorganmanagementsystem.app.entities.Individual;
 import com.bloodorganmanagementsystem.app.service.exception.AppException;
-import com.bloodorganmanagementsystem.app.entities.BodyTest;
+
 
 import org.springframework.stereotype.Service;
 
@@ -19,11 +20,11 @@ public interface IndividualService {
 
     public Optional<Individual> findById(String findId);
 
-    public boolean Register(Individual individual) throws AppException;
+    public String Register(IndividualDetails detail) throws AppException;
 
     public boolean Login(String email, String password)throws AppException;
 
-    public boolean addTest(String individualId, BodyTest test, String licenseKey) throws AppException;
+    public boolean addTest(String individualId, BodyTestDetails detail, String licenseKey) throws AppException;
 
     /**
      * 

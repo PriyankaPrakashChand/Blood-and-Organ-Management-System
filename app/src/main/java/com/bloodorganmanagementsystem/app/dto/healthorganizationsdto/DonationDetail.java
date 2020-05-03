@@ -12,6 +12,7 @@ import lombok.Data;
 
 
 @Data
+@AllArgsConstructor
 public class DonationDetail {
     @NotNull(message = "Entity name cannot be null")
    EntityName entityName;
