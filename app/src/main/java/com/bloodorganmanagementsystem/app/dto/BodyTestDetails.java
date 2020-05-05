@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class BodyTestDetails {
-    @NotNull(message="Gender cannot be null")
+    @NotNull(message="Testname cannot be null")
     TestName testName;
     @NotNull(message=" Test Results must not be null")
 	 boolean hasPassed;

@@ -6,7 +6,10 @@ import java.util.List;
 import com.bloodorganmanagementsystem.app.dto.BodyTestDetails;
 import com.bloodorganmanagementsystem.app.dto.EntityStatistic;
 import com.bloodorganmanagementsystem.app.dto.healthorganizationsdto.Donation;
+import com.bloodorganmanagementsystem.app.dto.healthorganizationsdto.DonationDetail;
 import com.bloodorganmanagementsystem.app.dto.statsdto.OrgList;
+import com.bloodorganmanagementsystem.app.entities.BloodTypeQty;
+import com.bloodorganmanagementsystem.app.entities.Blood.BloodType;
 import com.bloodorganmanagementsystem.app.entities.BodyTest.TestName;
 import com.bloodorganmanagementsystem.app.entities.DonationEntityDetail.EntityName;
 import com.bloodorganmanagementsystem.app.service.StatsService;
@@ -31,6 +34,7 @@ public class StatisticsController {
     public List<OrgList>  test(){
         return statsSer.getOrgDetails();
     }
-    
+
+  
 
 }
